@@ -34,16 +34,19 @@ export const TextNode = (props) => {
     updateNodeInternals(id);
   }, [id, variables, updateNodeInternals]);
 
+  // Real-time height auto-resizing via scrollHeight measurement
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.max(64, textareaRef.current.scrollHeight)}px`;
+    }
+  }, [text]);
+
   // Dynamic dimension calculations based on text length and lines
-  const { cardWidth, rowsCount } = useMemo(() => {
+  const cardWidth = useMemo(() => {
     const lines = text.split('\n');
     const maxLineLen = lines.reduce((max, line) => Math.max(max, line.length), 0);
-    
-    // Width scales between min 240px and max 520px
-    const width = Math.max(240, Math.min(520, maxLineLen * 8.5 + 44));
-    const rows = Math.max(2, Math.min(12, lines.length));
-    
-    return { cardWidth: width, rowsCount: rows };
+    return Math.max(240, Math.min(600, maxLineLen * 8.5 + 44));
   }, [text]);
 
   const handleTextChange = (e) => {
@@ -83,13 +86,13 @@ export const TextNode = (props) => {
             ref={textareaRef}
             className="node-textarea"
             value={text}
-            rows={rowsCount}
             placeholder="Type text with {{ variables }}..."
             onChange={handleTextChange}
             style={{
               width: '100%',
-              minHeight: '60px',
-              transition: 'all 0.15s ease',
+              minHeight: '64px',
+              overflow: 'hidden',
+              transition: 'height 0.1s ease, width 0.1s ease',
             }}
           />
         </div>
