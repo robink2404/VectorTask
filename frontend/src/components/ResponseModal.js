@@ -1,10 +1,11 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import { CheckCircle2, AlertTriangle, X, Hash, Share2, Layers } from 'lucide-react';
 
 export const ResponseModal = ({ isOpen, onClose, result, error }) => {
   if (!isOpen) return null;
 
-  return (
+  return ReactDOM.createPortal(
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
@@ -74,6 +75,7 @@ export const ResponseModal = ({ isOpen, onClose, result, error }) => {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
